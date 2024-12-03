@@ -1,12 +1,21 @@
+provider "aws" {
+  # Tags to apply to all AWS resources by default
+  default_tags {
+    tags = {
+      "rickumali-com:certs:last-apply-by"        = "Rick Umali"
+      "rickumali-com:certs:last-apply-timestamp" = var.timestamp
+      "rickumali-com:certs:terraform"            = "aws-tf"
+      "rickumali-com:certs:terraform-version"    = var.git_version
+      "rickumali-com:certs:environment"          = "Development"
+    }
+  }
+}
+
 resource "aws_acm_certificate" "devcert" {
   for_each = toset(var.cert_names)
 
   domain_name       = "${each.value}.test.gitmol.com"
   validation_method = "DNS"
-
-  tags = {
-    Environment = "Development"
-  }
 }
 
 locals {
